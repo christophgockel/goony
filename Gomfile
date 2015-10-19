@@ -1,0 +1,4 @@
+group :test do
+  gom 'github.com/onsi/ginkgo/ginkgo'
+  gom 'github.com/onsi/gomega'
+end
