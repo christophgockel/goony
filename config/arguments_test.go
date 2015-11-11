@@ -29,47 +29,41 @@ var _ = Describe("Arguments", func() {
 		})
 
 		It("uses localhost as the default host", func() {
-			Expect(options.Host).To(Equal("localhost"))
-		})
-
-		It("uses 8080 as the default port", func() {
-			Expect(options.Port).To(Equal(8080))
+			Expect(options.Host).To(Equal("http://localhost"))
 		})
 	})
 
 	Context("two arguments", func() {
+		var err error
+
 		BeforeEach(func() {
-			options, _ = config.ParseArguments("host", "filename")
+			options, err = config.ParseArguments("http://host", "filename")
 		})
 
 		It("takes the host as the first argument", func() {
-			Expect(options.Host).To(Equal("host"))
+			Expect(options.Host).To(Equal("http://host"))
 		})
 
 		It("uses second argument as the filename", func() {
 			Expect(options.File).To(Equal("filename"))
 		})
 
-		It("uses 8080 as the default port", func() {
-			Expect(options.Port).To(Equal(8080))
-		})
-	})
+		It("adds 'http://' as the default scheme, if not given", func() {
+			options, _ := config.ParseArguments("host.name", "")
 
-	Context("three arguments", func() {
-		BeforeEach(func() {
-			options, _ = config.ParseArguments("host", "1234", "filename")
+			Expect(options.Host).To(Equal("http://host.name"))
 		})
 
-		It("takes the host as the first argument", func() {
-			Expect(options.Host).To(Equal("host"))
+		It("adds 'http://' as the default scheme for a hostname with a port", func() {
+			options, _ := config.ParseArguments("host:1234", "")
+
+			Expect(options.Host).To(Equal("http://host:1234"))
 		})
 
-		It("takes the port as the second argument", func() {
-			Expect(options.Port).To(Equal(1234))
-		})
+		It("allows the port to be specified", func() {
+			options, _ := config.ParseArguments("http://host.name:1234", "")
 
-		It("uses the third argument as the filename", func() {
-			Expect(options.File).To(Equal("filename"))
+			Expect(options.Host).To(Equal("http://host.name:1234"))
 		})
 	})
 })
