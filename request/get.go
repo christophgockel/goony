@@ -14,6 +14,7 @@ const (
 
 type Result struct {
 	Status        Status
+	Time          time.Time
 	Url           string
 	HttpStatus    int
 	Nanoseconds   int64
@@ -25,13 +26,13 @@ func Get(path string, host string, client *http.Client) Result {
 
 	start := time.Now()
 	response, err := client.Get(url)
-	requestTime := time.Since(start).Nanoseconds()
+	requestDuration := time.Since(start).Nanoseconds()
 
 	if err != nil {
 		return newFailureResult(err, url)
 	}
 
-	return newSuccessResult(url, response.StatusCode, requestTime)
+	return newSuccessResult(start, url, response.StatusCode, requestDuration)
 }
 
 func newFailureResult(err error, url string) Result {
@@ -42,9 +43,10 @@ func newFailureResult(err error, url string) Result {
 	}
 }
 
-func newSuccessResult(url string, httpStatus int, nanoseconds int64) Result {
+func newSuccessResult(time time.Time, url string, httpStatus int, nanoseconds int64) Result {
 	return Result{
 		Status:      SUCCESS,
+		Time:        time,
 		Url:         url,
 		HttpStatus:  httpStatus,
 		Nanoseconds: nanoseconds,

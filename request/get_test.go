@@ -27,14 +27,17 @@ var _ = Describe("Request Get", func() {
 		Expect(result.Status).To(Equal(request.SUCCESS))
 	})
 
-	It("tracks the URI, status code and time for a request", func() {
+	It("tracks result data of a request", func() {
 		startServerWithResponseCode(200)
 
 		result := request.Get("/route", "http://host", client)
 
+		Expect(result.Status).To(Equal(request.SUCCESS))
+		Expect(result.Time.Second()).To(Equal(time.Now().Second()))
 		Expect(result.HttpStatus).To(Equal(200))
 		Expect(result.Url).To(Equal("http://host/route"))
 		Expect(result.Nanoseconds).To(BeNumerically(">", 0))
+		Expect(result.StatusMessage).To(Equal(""))
 	})
 
 	It("returns failure results when the request times out", func() {
