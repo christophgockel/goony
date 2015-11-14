@@ -46,7 +46,9 @@ var _ = Describe("Request Get", func() {
 		result := request.Get("/route", "http://host", client)
 
 		Expect(result.Status).To(Equal(request.FAILURE))
+		Expect(result.Time.Second()).To(Equal(time.Now().Second()))
 		Expect(result.Url).To(Equal("http://host/route"))
+		Expect(result.Nanoseconds).To(BeNumerically(">", 0))
 		Expect(strings.ToLower(result.StatusMessage)).To(ContainSubstring("timeout"))
 	})
 

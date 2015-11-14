@@ -29,17 +29,19 @@ func Get(path string, host string, client *http.Client) Result {
 	requestDuration := time.Since(start).Nanoseconds()
 
 	if err != nil {
-		return newFailureResult(err, url)
+		return newFailureResult(err, start, url, requestDuration)
 	}
 
 	return newSuccessResult(start, url, response.StatusCode, requestDuration)
 }
 
-func newFailureResult(err error, url string) Result {
+func newFailureResult(err error, time time.Time, url string, nanoseconds int64) Result {
 	return Result{
 		Status:        FAILURE,
+		Time:          time,
 		Url:           url,
 		StatusMessage: err.Error(),
+		Nanoseconds:   nanoseconds,
 	}
 }
 
