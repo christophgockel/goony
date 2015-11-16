@@ -8,15 +8,30 @@ import (
 	"os"
 )
 
+const ROUTINES = 10
+
 func main() {
 	options, _ := config.ParseArguments(os.Args[1:]...)
 
+	linesChannel := make(chan string)
+	done := make(chan bool)
+
 	file, _ := os.Open(options.File)
-	lines := files.ReadContent(file)
+	go files.StreamContent(file, linesChannel)
 
-	for _, line := range lines {
-		result := request.Get(line, options.Host, http.DefaultClient)
+	for i := 0; i < ROUTINES; i++ {
+		go func() {
+			for line := range linesChannel {
+				result := request.Get(line, options.Host, http.DefaultClient)
 
-		files.Print(result, os.Stdout)
+				files.Print(result, os.Stdout)
+			}
+
+			done <- true
+		}()
+	}
+
+	for i := 0; i < ROUTINES; i++ {
+		<-done
 	}
 }
