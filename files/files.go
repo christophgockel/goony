@@ -5,13 +5,12 @@ import (
 	"io"
 )
 
-func ReadContent(input io.Reader) []string {
-	var lines []string
+func StreamContent(input io.Reader, channel chan string) {
 	scanner := bufio.NewScanner(input)
 
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		channel <- scanner.Text()
 	}
 
-	return lines
+	close(channel)
 }
