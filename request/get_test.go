@@ -33,10 +33,11 @@ var _ = Describe("Request Get", func() {
 		result := request.Get("/route", "http://host", client)
 
 		Expect(result.Status).To(Equal(request.SUCCESS))
-		Expect(result.Time.Second()).To(Equal(time.Now().Second()))
+		Expect(result.StartTime.Second()).To(Equal(time.Now().Second()))
 		Expect(result.HttpStatus).To(Equal(200))
 		Expect(result.Url).To(Equal("http://host/route"))
 		Expect(result.Nanoseconds).To(BeNumerically(">", 0))
+		Expect(result.EndTime.Second()).To(BeNumerically(">", 0))
 		Expect(result.StatusMessage).To(Equal(""))
 	})
 
@@ -46,9 +47,10 @@ var _ = Describe("Request Get", func() {
 		result := request.Get("/route", "http://host", client)
 
 		Expect(result.Status).To(Equal(request.FAILURE))
-		Expect(result.Time.Second()).To(Equal(time.Now().Second()))
+		Expect(result.StartTime.Second()).To(Equal(time.Now().Second()))
 		Expect(result.Url).To(Equal("http://host/route"))
 		Expect(result.Nanoseconds).To(BeNumerically(">", 0))
+		Expect(result.EndTime.Second()).To(BeNumerically(">", 0))
 		Expect(strings.ToLower(result.StatusMessage)).To(ContainSubstring("timeout"))
 	})
 

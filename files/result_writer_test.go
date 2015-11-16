@@ -13,10 +13,11 @@ var _ = Describe("Result writer", func() {
 	It("prints a Result structure as a line of CSV", func() {
 		result := request.Result{
 			Status:        request.SUCCESS,
-			Time:          time.Date(2015, 11, 13, 15, 06, 01, 123456789, time.Local),
+			StartTime:     time.Date(2015, 11, 13, 15, 06, 01, 123456789, time.Local),
 			Url:           "http://host/route/endpoint",
 			HttpStatus:    200,
 			Nanoseconds:   1522643,
+			EndTime:       time.Date(2015, 11, 13, 15, 06, 02, 123456789, time.Local),
 			StatusMessage: "",
 		}
 
@@ -24,6 +25,6 @@ var _ = Describe("Result writer", func() {
 
 		files.Print(result, output)
 
-		Expect(output.String()).To(Equal("S,2015-11-13,15:06:01.123456789,http://host/route/endpoint,200,1522643,\n"))
+		Expect(output.String()).To(Equal("S,2015-11-13,15:06:01.123456789,http://host/route/endpoint,200,1522643,2015-11-13,15:06:02.123456789,\n"))
 	})
 })
