@@ -2,12 +2,14 @@ package config
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 )
 
 type Options struct {
-	Host string
-	File string
+	NumberOfRoutines int
+	Host             string
+	File             string
 }
 
 func ParseArguments(arguments ...string) (Options, error) {
@@ -17,6 +19,8 @@ func ParseArguments(arguments ...string) (Options, error) {
 		return optionsForOneArgument(arguments...), nil
 	} else if len(arguments) == 2 {
 		return optionsForTwoArguments(arguments...), nil
+	} else if len(arguments) == 3 {
+		return optionsForThreeArguments(arguments...), nil
 	}
 
 	return options, errors.New("No filename specified")
@@ -39,6 +43,16 @@ func optionsForTwoArguments(arguments ...string) Options {
 	return options
 }
 
+func optionsForThreeArguments(arguments ...string) Options {
+	options := newDefaultOptions()
+
+	options.NumberOfRoutines, _ = strconv.Atoi(arguments[0])
+	options.Host = urlWithScheme(arguments[1])
+	options.File = arguments[2]
+
+	return options
+}
+
 func urlWithScheme(originalUrl string) string {
 	newUrl := originalUrl
 
@@ -51,6 +65,7 @@ func urlWithScheme(originalUrl string) string {
 
 func newDefaultOptions() Options {
 	return Options{
-		Host: "http://localhost",
+		NumberOfRoutines: 10,
+		Host:             "http://localhost",
 	}
 }

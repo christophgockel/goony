@@ -19,17 +19,25 @@ var _ = Describe("Arguments", func() {
 		})
 	})
 
-	Context("one argument", func() {
+	Context("default options", func() {
 		BeforeEach(func() {
 			options, _ = config.ParseArguments("filename")
 		})
 
-		It("is the log file's name", func() {
-			Expect(options.File).To(Equal("filename"))
-		})
-
 		It("uses localhost as the default host", func() {
 			Expect(options.Host).To(Equal("http://localhost"))
+		})
+
+		It("uses 10 as the default number of goroutines", func() {
+			Expect(options.NumberOfRoutines).To(Equal(10))
+		})
+	})
+
+	Context("one argument", func() {
+		It("is the log file's name", func() {
+			options, _ = config.ParseArguments("filename")
+
+			Expect(options.File).To(Equal("filename"))
 		})
 	})
 
@@ -64,6 +72,14 @@ var _ = Describe("Arguments", func() {
 			options, _ := config.ParseArguments("http://host.name:1234", "")
 
 			Expect(options.Host).To(Equal("http://host.name:1234"))
+		})
+	})
+
+	Context("three arguments", func() {
+		It("takes the number of goroutines as the first argument", func() {
+			options, _ := config.ParseArguments("42", "", "")
+
+			Expect(options.NumberOfRoutines).To(Equal(42))
 		})
 	})
 })
