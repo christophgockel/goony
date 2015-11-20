@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/christophgockel/goony/config"
 	"github.com/christophgockel/goony/files"
 	"github.com/christophgockel/goony/request"
@@ -9,7 +10,12 @@ import (
 )
 
 func main() {
-	options, _ := config.ParseArguments(os.Args[1:]...)
+	options, err := config.Parse(os.Args[1:]...)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
 	linesChannel := make(chan string)
 	done := make(chan bool)

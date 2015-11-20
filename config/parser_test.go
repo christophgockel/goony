@@ -1,0 +1,113 @@
+package config_test
+
+import (
+	"github.com/christophgockel/goony/config"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+var _ = Describe("Config - Parser", func() {
+	It("returns an error if no arguments are given", func() {
+		_, err := config.Parse()
+
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("Filename is missing"))
+	})
+
+	It("returns an error for mistyped flag", func() {
+		_, err := config.Parse("-t800")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("Invalid argument: -t800"))
+	})
+
+	Context("filename argument", func() {
+		It("returns an error if no file has been specified", func() {
+			_, err := config.Parse("-h", "host.name")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Filename is missing"))
+		})
+
+		It("parses the filename", func() {
+			options, _ := config.Parse("filename")
+
+			Expect(options.File).To(Equal("filename"))
+		})
+	})
+
+	Context("--threads flag", func() {
+		It("parses threads (short flag)", func() {
+			options, _ := config.Parse("-t", "1000", "filename")
+
+			Expect(options.NumberOfRoutines).To(Equal(1000))
+		})
+
+		It("parses threads (long flag)", func() {
+			options, _ := config.Parse("--threads", "1000", "filename")
+
+			Expect(options.NumberOfRoutines).To(Equal(1000))
+		})
+
+		It("returns an error for invalid thread count", func() {
+			_, err := config.Parse("-t", "one", "filename")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Invalid thread count: one"))
+		})
+	})
+
+	Context("--host flag", func() {
+		It("returns an error if filename can't be distinguished", func() {
+			_, err := config.Parse("1000", "filename")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Too many arguments"))
+		})
+
+		It("parses the host (short flag)", func() {
+			options, _ := config.Parse("-h", "http://hostname", "filename")
+
+			Expect(options.Host).To(Equal("http://hostname"))
+		})
+
+		It("parses the host (long flag)", func() {
+			options, _ := config.Parse("--host", "http://hostname", "filename")
+
+			Expect(options.Host).To(Equal("http://hostname"))
+		})
+
+		It("adds HTTP as the default scheme, if not given", func() {
+			options, _ := config.Parse("--host", "hostname", "filename")
+
+			Expect(options.Host).To(Equal("http://hostname"))
+		})
+
+		It("returns an error for missing hostname", func() {
+			_, err := config.Parse("-h")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Missing hostname"))
+		})
+	})
+
+	Context("all arguments", func() {
+		It("parses all options", func() {
+			options, err := config.Parse("-t", "42", "-h", "http://hostname", "filename")
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(options.Host).To(Equal("http://hostname"))
+			Expect(options.NumberOfRoutines).To(Equal(42))
+			Expect(options.File).To(Equal("filename"))
+		})
+
+		It("doesn't care about the order of the filename and flags", func() {
+			options, err := config.Parse("filename", "-t", "42", "-h", "http://hostname")
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(options.Host).To(Equal("http://hostname"))
+			Expect(options.NumberOfRoutines).To(Equal(42))
+			Expect(options.File).To(Equal("filename"))
+		})
+	})
+})

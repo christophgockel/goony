@@ -16,22 +16,24 @@ The easiest way at the moment: `go get http://github.com/christophgockel/goony`
 
 ## Usage
 
-> `goony [number of goroutines] [target-host] logfile`
+> `goony [-t|--threads n] [-h|--host http://target-host] file`
 
-Goony supports three ways of arguments:
+Goony has to be called with at least the route file as its argument.
+Additionally to that there are two flags: one to configure the number of threads (goroutines), and one to specify the target host.
 
 - `goony file.log`
   - Uses `file.log` to be used as the routes to be requested.
-  - Uses the default host `http://localhost`.
+  - Uses the default host `http://localhost` and number of threads (10).
 
-- `goony http://hostname.dev:8080 file.log`
+- `goony --host http://hostname.dev:8080 file.log`
+  - Uses `file.log` to be used as the routes to be requested.
+  - Uses the host `http://hostname.dev:8080` and the default number of threads (10).
+
+- `goony -t 100 -h http://hostname.dev:8080 file.log`
   - Uses `file.log` to be used as the routes to be requested.
   - Uses the host `http://hostname.dev:8080`.
-
-- `goony 100 http://hostname.dev:8080 file.log`
-  - Uses `file.log` to be used as the routes to be requested.
-  - Uses the host `http://hostname.dev:8080`.
-  - Uses 100 separate goroutines for all requests (default is `10`)
+  - Uses 100 threads to execute the requests.
+    - If the file has less routes in total, excessive threads will do no work.
 
 
 ### File Format
