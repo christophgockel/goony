@@ -13,7 +13,7 @@ func main() {
 	options, err := config.Parse(os.Args[1:]...)
 
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 		return
 	}
 
