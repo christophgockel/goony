@@ -11,7 +11,7 @@ Goony uses a text-file that contains all routes/endpoints you want to request on
 
 ## Install
 
-The easiest way at the moment: `go get http://github.com/christophgockel/goony`
+The easiest way at the moment: `go get github.com/christophgockel/goony`
 
 
 ## Usage
