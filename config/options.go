@@ -4,6 +4,7 @@ type Options struct {
 	NumberOfRoutines int
 	Host             string
 	File             string
+	OutputFilename   string
 }
 
 func newDefaultOptions() Options {

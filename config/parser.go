@@ -44,6 +44,8 @@ func parseFlag(options Options, arguments ...string) (Options, error) {
 		return parseThreadArgument(options, arguments...)
 	} else if isHostFlag(flag) {
 		return parseHostnameArgument(options, arguments...)
+	} else if isOutFlag(flag) {
+		return parseOutputFileArgument(options, arguments...)
 	}
 
 	return options, errors.New("Invalid argument: " + flag)
@@ -68,6 +70,10 @@ func isThreadsFlag(argument string) bool {
 
 func isHostFlag(argument string) bool {
 	return argument == "-h" || argument == "--host"
+}
+
+func isOutFlag(argument string) bool {
+	return argument == "-o" || argument == "--out"
 }
 
 func fileArgumentIsAllowed(options Options) bool {
@@ -106,4 +112,14 @@ func hostWithScheme(host string) string {
 	}
 
 	return "http://" + host
+}
+
+func parseOutputFileArgument(options Options, arguments ...string) (Options, error) {
+	if len(arguments) < 2 {
+		return options, errors.New("Missing output filename")
+	}
+
+	options.OutputFilename = arguments[1]
+
+	return parseArguments(options, arguments[2:]...)
 }

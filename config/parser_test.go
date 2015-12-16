@@ -91,6 +91,28 @@ var _ = Describe("Config - Parser", func() {
 		})
 	})
 
+	Context("--out flag", func() {
+		It("parses the filename (short flag)", func() {
+
+			options, _ := config.Parse("-o", "output-filename")
+
+			Expect(options.OutputFilename).To(Equal("output-filename"))
+		})
+
+		It("parses the filename (long flag)", func() {
+			options, _ := config.Parse("--out", "output-filename")
+
+			Expect(options.OutputFilename).To(Equal("output-filename"))
+		})
+
+		It("returns an error for missing filename", func() {
+			_, err := config.Parse("--out")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Missing output filename"))
+		})
+	})
+
 	Context("all arguments", func() {
 		It("parses all options", func() {
 			options, err := config.Parse("-t", "42", "-h", "http://hostname", "filename")
