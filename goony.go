@@ -10,24 +10,14 @@ import (
 )
 
 func main() {
-	options, err := config.Parse(os.Args[1:]...)
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		return
-	}
-
-	file, err := files.Open(options.File)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		return
-	}
+	options := options()
+	routesFile := routesFile(options.File)
 
 	linesChannel := make(chan string)
 	done := make(chan bool)
 	resultsChannel := make(chan request.Result, 10000)
 
-	go files.StreamContent(file, linesChannel)
+	go files.StreamContent(routesFile, linesChannel)
 
 	for i := 0; i < options.NumberOfRoutines; i++ {
 		go func() {
@@ -52,4 +42,26 @@ func main() {
 
 	close(resultsChannel)
 	<-done
+}
+
+func options() config.Options {
+	options, err := config.Parse(os.Args[1:]...)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
+	}
+
+	return options
+}
+
+func routesFile(filename string) files.File {
+	file, err := files.Open(filename)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(2)
+	}
+
+	return file
 }

@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Trying to read an unknown or inaccessible file yields an error message
+- Main executable returns proper error codes on error conditions (e.g. unknown file)
 
 ## [1.0.0] - 2015-11-25
 
