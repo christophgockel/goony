@@ -17,11 +17,16 @@ func main() {
 		return
 	}
 
+	file, err := files.Open(options.File)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+
 	linesChannel := make(chan string)
 	done := make(chan bool)
 	resultsChannel := make(chan request.Result, 10000)
 
-	file, _ := os.Open(options.File)
 	go files.StreamContent(file, linesChannel)
 
 	for i := 0; i < options.NumberOfRoutines; i++ {

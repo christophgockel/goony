@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Trying to read an unknown or inaccessible file yields an error message
 
 ## [1.0.0] - 2015-11-25
 
