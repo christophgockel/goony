@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- CSV output can be written to a file directly instead of stdout
+
 ### Fixed
 - Trying to read an unknown or inaccessible file yields an error message
 - Main executable returns proper error codes on error conditions (e.g. unknown file)

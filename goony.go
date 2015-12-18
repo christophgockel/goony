@@ -12,6 +12,7 @@ import (
 func main() {
 	options := options()
 	routesFile := routesFile(options.File)
+	outputFile := outputFile(options.OutputFilename)
 
 	linesChannel := make(chan string)
 	done := make(chan bool)
@@ -31,7 +32,7 @@ func main() {
 
 	go func() {
 		for result := range resultsChannel {
-			files.Print(result, os.Stdout)
+			files.Print(result, outputFile)
 		}
 		done <- true
 	}()
@@ -61,6 +62,17 @@ func routesFile(filename string) files.File {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(2)
+	}
+
+	return file
+}
+
+func outputFile(filename string) files.File {
+	file, err := files.OutputFile(filename)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(3)
 	}
 
 	return file
