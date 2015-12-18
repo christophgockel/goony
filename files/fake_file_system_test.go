@@ -19,6 +19,14 @@ type fakeFile struct {
 }
 
 func (fs aFakeFileSystem) Open(name string) (files.File, error) {
+	return fs.fakeFileBehavior(name)
+}
+
+func (fs aFakeFileSystem) Create(name string) (files.File, error) {
+	return fs.fakeFileBehavior(name)
+}
+
+func (fs aFakeFileSystem) fakeFileBehavior(name string) (files.File, error) {
 	if fs.fileExists == false {
 		return nil, os.ErrNotExist
 	}
