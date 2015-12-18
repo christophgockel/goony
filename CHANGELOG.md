@@ -4,12 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [1.1.0] - 2015-12-18
+
 ### Added
 - CSV output can be written to a file directly instead of stdout
 
 ### Fixed
 - Trying to read an unknown or inaccessible file yields an error message
 - Main executable returns proper error codes on error conditions (e.g. unknown file)
+
 
 ## [1.0.0] - 2015-11-25
 
@@ -27,6 +31,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The target host and number of separate threads are configurable.
 
 
-[Unreleased]: https://github.com/christophgockel/goony/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/christophgockel/goony/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/christophgockel/goony/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/christophgockel/goony/compare/0.0.1...1.0.0
 

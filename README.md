@@ -16,7 +16,7 @@ The easiest way at the moment: `go get github.com/christophgockel/goony`
 
 ## Usage
 
-> `goony [-t|--threads n] [-h|--host http://target-host] file`
+> `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] routes-file`
 
 Goony has to be called with at least the route file as its argument.
 Additionally to that there are two flags: one to configure the number of threads (goroutines), and one to specify the target host.
@@ -35,6 +35,9 @@ Additionally to that there are two flags: one to configure the number of threads
   - Uses 100 threads to execute the requests.
     - If the file has less routes in total, excessive threads will do no work.
 
+- `goony --out report.csv file.log`
+  - Uses `file.log` to be used as the routes to be requested.
+  - Writes CSV output to file `report.csv`
 
 ### File Format
 
