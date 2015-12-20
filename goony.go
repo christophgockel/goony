@@ -57,7 +57,7 @@ func options() config.Options {
 }
 
 func routesFile(filename string) files.File {
-	file, err := files.Open(filename)
+	file, err := files.OpenForReading(filename)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
@@ -68,7 +68,7 @@ func routesFile(filename string) files.File {
 }
 
 func outputFile(filename string) files.File {
-	file, err := files.OutputFile(filename)
+	file, err := files.OpenForWriting(filename)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
