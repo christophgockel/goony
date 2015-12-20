@@ -9,13 +9,14 @@ import (
 
 var _ = Describe("Files - Reading and Writing", func() {
 	Context("OpenForReading()", func() {
-		It("returns the file if it exists", func() {
+		It("returns a readable file", func() {
 			prepareFilesystemWithAccessibleFile()
 
 			file, err := files.OpenForReading("existing-file")
 
 			Expect(file).To(Not(BeNil()))
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(fileIsReadable()).To(Equal(true))
 		})
 
 		It("returns an error if the file does not exist", func() {
@@ -38,16 +39,17 @@ var _ = Describe("Files - Reading and Writing", func() {
 	})
 
 	Context("OpenForWriting()", func() {
-		It("returns the file if it exists", func() {
+		It("returns a writable file", func() {
 			prepareFilesystemWithAccessibleFile()
 
 			file, err := files.OpenForWriting("the-file")
 
 			Expect(file).To(Not(BeNil()))
 			Expect(err).To(Not(HaveOccurred()))
+			Expect(fileIsWritable()).To(Equal(true))
 		})
 
-		It("returns stdout if no filename given", func() {
+		It("returns stdout if no filename is given", func() {
 			file, _ := files.OpenForWriting("")
 
 			Expect(file).To(Equal(os.Stdout))

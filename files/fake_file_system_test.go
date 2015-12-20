@@ -12,17 +12,24 @@ type aFakeFileSystem struct {
 
 	fileExists                bool
 	fileHasCorrectPermissions bool
+
+	openHasBeenCalled   bool
+	createHasBeenCalled bool
 }
 
 type fakeFile struct {
 	files.File
 }
 
-func (fs aFakeFileSystem) Open(name string) (files.File, error) {
+func (fs *aFakeFileSystem) Open(name string) (files.File, error) {
+	fs.openHasBeenCalled = true
+
 	return fs.fakeFileBehavior(name)
 }
 
-func (fs aFakeFileSystem) Create(name string) (files.File, error) {
+func (fs *aFakeFileSystem) Create(name string) (files.File, error) {
+	fs.createHasBeenCalled = true
+
 	return fs.fakeFileBehavior(name)
 }
 
@@ -57,4 +64,12 @@ func prepareFilesystemWithUnaccessibleFile() {
 
 	fakeFilesystem.fileExists = true
 	fakeFilesystem.fileHasCorrectPermissions = false
+}
+
+func fileIsWritable() bool {
+	return fakeFilesystem.createHasBeenCalled
+}
+
+func fileIsReadable() bool {
+	return fakeFilesystem.openHasBeenCalled
 }
