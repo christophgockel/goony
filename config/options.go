@@ -5,6 +5,7 @@ type Options struct {
 	Host             string
 	File             string
 	OutputFilename   string
+	RunEndless       bool
 }
 
 func newDefaultOptions() Options {

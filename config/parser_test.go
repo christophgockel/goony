@@ -93,7 +93,6 @@ var _ = Describe("Config - Parser", func() {
 
 	Context("--out flag", func() {
 		It("parses the filename (short flag)", func() {
-
 			options, _ := config.Parse("-o", "output-filename")
 
 			Expect(options.OutputFilename).To(Equal("output-filename"))
@@ -113,23 +112,41 @@ var _ = Describe("Config - Parser", func() {
 		})
 	})
 
+	Context("--endless flag", func() {
+		It("parses the short flag", func() {
+			options, _ := config.Parse("-e")
+
+			Expect(options.RunEndless).To(BeTrue())
+		})
+
+		It("parses the long flag", func() {
+			options, _ := config.Parse("--endless")
+
+			Expect(options.RunEndless).To(BeTrue())
+		})
+	})
+
 	Context("all arguments", func() {
 		It("parses all options", func() {
-			options, err := config.Parse("-t", "42", "-h", "http://hostname", "filename")
+			options, err := config.Parse("-t", "42", "-h", "http://hostname", "-o", "output", "filename", "-e")
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(options.Host).To(Equal("http://hostname"))
 			Expect(options.NumberOfRoutines).To(Equal(42))
 			Expect(options.File).To(Equal("filename"))
+			Expect(options.OutputFilename).To(Equal("output"))
+			Expect(options.RunEndless).To(BeTrue())
 		})
 
 		It("doesn't care about the order of the filename and flags", func() {
-			options, err := config.Parse("filename", "-t", "42", "-h", "http://hostname")
+			options, err := config.Parse("-e", "filename", "-t", "42", "-h", "http://hostname", "-o", "output")
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(options.Host).To(Equal("http://hostname"))
 			Expect(options.NumberOfRoutines).To(Equal(42))
 			Expect(options.File).To(Equal("filename"))
+			Expect(options.OutputFilename).To(Equal("output"))
+			Expect(options.RunEndless).To(BeTrue())
 		})
 	})
 })
