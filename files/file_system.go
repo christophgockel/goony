@@ -1,20 +1,12 @@
 package files
 
-import (
-	"io"
-	"os"
-)
+import "os"
 
 var Filesystem TheFileSystem = realFilesystem{}
 
 type TheFileSystem interface {
 	Create(name string) (File, error)
 	Open(name string) (File, error)
-}
-
-type File interface {
-	io.Reader
-	io.Writer
 }
 
 type realFilesystem struct{}
