@@ -46,6 +46,8 @@ func parseFlag(options Options, arguments ...string) (Options, error) {
 		return parseHostnameArgument(options, arguments...)
 	} else if isOutFlag(flag) {
 		return parseOutputFileArgument(options, arguments...)
+	} else if isEndlessFlag(flag) {
+		return parseEndlessArgument(options, arguments...)
 	}
 
 	return options, errors.New("Invalid argument: " + flag)
@@ -74,6 +76,10 @@ func isHostFlag(argument string) bool {
 
 func isOutFlag(argument string) bool {
 	return argument == "-o" || argument == "--out"
+}
+
+func isEndlessFlag(argument string) bool {
+	return argument == "-e" || argument == "--endless"
 }
 
 func fileArgumentIsAllowed(options Options) bool {
@@ -122,4 +128,10 @@ func parseOutputFileArgument(options Options, arguments ...string) (Options, err
 	options.OutputFilename = arguments[1]
 
 	return parseArguments(options, arguments[2:]...)
+}
+
+func parseEndlessArgument(options Options, arguments ...string) (Options, error) {
+	options.RunEndless = true
+
+	return parseArguments(options, arguments[1:]...)
 }

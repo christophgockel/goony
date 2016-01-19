@@ -1,16 +1,21 @@
 package files
 
-import (
-	"bufio"
-	"io"
-)
+import "bufio"
 
-func StreamContent(input io.Reader, channel chan string) {
-	scanner := bufio.NewScanner(input)
+func StreamContent(file File, lines chan string, stop chan bool) {
+	scanner := bufio.NewScanner(file)
 
-	for scanner.Scan() {
-		channel <- scanner.Text()
+	for {
+		select {
+		case <-stop:
+			close(lines)
+			return
+		default:
+			if scanner.Scan() {
+				lines <- scanner.Text()
+			} else {
+				stop <- true
+			}
+		}
 	}
-
-	close(channel)
 }

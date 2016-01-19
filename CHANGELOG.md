@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Content of route files can be repeated endlessly via the `--endless` flag
 
 ## [1.1.0] - 2015-12-18
 

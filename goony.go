@@ -5,20 +5,25 @@ import (
 	"github.com/christophgockel/goony/config"
 	"github.com/christophgockel/goony/files"
 	"github.com/christophgockel/goony/request"
+	"github.com/christophgockel/goony/signals"
 	"net/http"
 	"os"
+	"os/signal"
 )
 
 func main() {
 	options := options()
-	routesFile := routesFile(options.File)
+	routesFile := routesFile(options.File, options.RunEndless)
 	outputFile := outputFile(options.OutputFilename)
+
+	defer routesFile.Close()
+	defer outputFile.Close()
 
 	linesChannel := make(chan string)
 	done := make(chan bool)
 	resultsChannel := make(chan request.Result, 10000)
 
-	go files.StreamContent(routesFile, linesChannel)
+	startContentStream(options, routesFile, linesChannel)
 
 	for i := 0; i < options.NumberOfRoutines; i++ {
 		go func() {
@@ -56,7 +61,7 @@ func options() config.Options {
 	return options
 }
 
-func routesFile(filename string) files.File {
+func routesFile(filename string, endless bool) files.File {
 	file, err := files.OpenForReading(filename)
 
 	if err != nil {
@@ -64,7 +69,11 @@ func routesFile(filename string) files.File {
 		os.Exit(2)
 	}
 
-	return file
+	if endless {
+		return files.EndlessFile{file}
+	} else {
+		return file
+	}
 }
 
 func outputFile(filename string) files.File {
@@ -76,4 +85,17 @@ func outputFile(filename string) files.File {
 	}
 
 	return file
+}
+
+func startContentStream(options config.Options, file files.File, linesChannel chan string) {
+	stopChannel := make(chan bool, 1)
+	catchCtrlC(stopChannel)
+	go files.StreamContent(file, linesChannel, stopChannel)
+}
+
+func catchCtrlC(output chan bool) {
+	signalChannel := make(chan os.Signal)
+	signal.Notify(signalChannel, os.Interrupt)
+
+	go signals.WaitForSignal(signalChannel, output)
 }

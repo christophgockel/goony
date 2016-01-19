@@ -1,6 +1,7 @@
 package files_test
 
 import (
+	"bytes"
 	"github.com/christophgockel/goony/files"
 	"os"
 )
@@ -15,10 +16,6 @@ type aFakeFileSystem struct {
 
 	openHasBeenCalled   bool
 	createHasBeenCalled bool
-}
-
-type fakeFile struct {
-	files.File
 }
 
 func (fs *aFakeFileSystem) Open(name string) (files.File, error) {
@@ -72,4 +69,35 @@ func fileIsWritable() bool {
 
 func fileIsReadable() bool {
 	return fakeFilesystem.openHasBeenCalled
+}
+
+type fakeFile struct {
+	files.File
+
+	lines   []string
+	content *bytes.Buffer
+}
+
+func (file fakeFile) Write(p []byte) (n int, err error) {
+	return 0, nil
+}
+
+func (file fakeFile) Read(p []byte) (n int, err error) {
+	return file.content.Read(p)
+}
+
+func (file fakeFile) Seek(offset int64, whence int) (int64, error) {
+	for _, line := range file.lines {
+		file.AddLine(line)
+	}
+
+	return 0, nil
+}
+
+func (file *fakeFile) AddLine(line string) {
+	if file.content == nil {
+		file.content = new(bytes.Buffer)
+	}
+	file.lines = append(file.lines, line)
+	file.content.WriteString(line + "\n")
 }
