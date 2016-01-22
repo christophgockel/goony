@@ -19,24 +19,21 @@ The easiest way at the moment: `go get github.com/christophgockel/goony`
 > `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] routes-file`
 
 Goony has to be called with at least the route file as its argument.
-Additionally to that there are two flags: one to configure the number of threads (goroutines), and one to specify the target host.
+Additionally to that, there are flags to configure the number of threads (goroutines), or specify the target host, etc.
 
-- `goony file.log`
-  - Uses `file.log` to be used as the routes to be requested.
+- `goony routes.txt`
+  - Uses `routes.txt` to be used as the routes to be requested.
   - Uses the default host `http://localhost` and number of threads (10).
-
-- `goony --host http://hostname.dev:8080 file.log`
-  - Uses `file.log` to be used as the routes to be requested.
+- `goony --host http://hostname.dev:8080 routes.txt`
+  - Uses `routes.txt` to be used as the routes to be requested.
   - Uses the host `http://hostname.dev:8080` and the default number of threads (10).
-
-- `goony -t 100 -h http://hostname.dev:8080 file.log`
-  - Uses `file.log` to be used as the routes to be requested.
+- `goony -t 100 -h http://hostname.dev:8080 routes.txt`
+  - Uses `routes.txt` to be used as the routes to be requested.
   - Uses the host `http://hostname.dev:8080`.
   - Uses 100 threads to execute the requests.
     - If the file has less routes in total, excessive threads will do no work.
-
-- `goony --out report.csv file.log`
-  - Uses `file.log` to be used as the routes to be requested.
+- `goony --out report.csv routes.txt`
+  - Uses `routes.txt` to be used as the routes to be requested.
   - Writes CSV output to file `report.csv`
 
 ### File Format
