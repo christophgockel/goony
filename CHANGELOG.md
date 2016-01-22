@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [1.2.0] - 2016-01-22
+
 ### Added
 - Content of route files can be repeated endlessly via the `--endless` flag.
 - Added usage help for the executable via `--help`.
@@ -34,7 +37,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - The target host and number of separate threads are configurable.
 
 
-[Unreleased]: https://github.com/christophgockel/goony/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/christophgockel/goony/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/christophgockel/goony/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/christophgockel/goony/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/christophgockel/goony/compare/0.0.1...1.0.0
 
