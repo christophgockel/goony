@@ -55,10 +55,20 @@ func options() config.Options {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
+		usageHelp()
 		os.Exit(1)
 	}
 
+	if options.UsageHelp {
+		usageHelp()
+		os.Exit(99)
+	}
+
 	return options
+}
+
+func usageHelp() {
+	fmt.Fprintln(os.Stdout, config.UsageHelp())
 }
 
 func routesFile(filename string, endless bool) files.File {
