@@ -1,6 +1,8 @@
 package config
 
 type Options struct {
+	UsageHelp bool
+
 	NumberOfRoutines int
 	Host             string
 	File             string

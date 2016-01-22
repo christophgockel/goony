@@ -12,7 +12,7 @@ func Parse(arguments ...string) (Options, error) {
 
 	options, err = parseArguments(options, arguments...)
 
-	if err != nil {
+	if err != nil || options.UsageHelp {
 		return options, err
 	}
 
@@ -48,6 +48,8 @@ func parseFlag(options Options, arguments ...string) (Options, error) {
 		return parseOutputFileArgument(options, arguments...)
 	} else if isEndlessFlag(flag) {
 		return parseEndlessArgument(options, arguments...)
+	} else if isHelpFlag(flag) {
+		return parseHelpArgument(options, arguments...)
 	}
 
 	return options, errors.New("Invalid argument: " + flag)
@@ -80,6 +82,10 @@ func isOutFlag(argument string) bool {
 
 func isEndlessFlag(argument string) bool {
 	return argument == "-e" || argument == "--endless"
+}
+
+func isHelpFlag(argument string) bool {
+	return argument == "--help"
 }
 
 func fileArgumentIsAllowed(options Options) bool {
@@ -134,4 +140,11 @@ func parseEndlessArgument(options Options, arguments ...string) (Options, error)
 	options.RunEndless = true
 
 	return parseArguments(options, arguments[1:]...)
+}
+
+func parseHelpArgument(options Options, arguments ...string) (Options, error) {
+	resettedOptions := newDefaultOptions()
+	resettedOptions.UsageHelp = true
+
+	return parseArguments(resettedOptions, arguments[0:0]...)
 }

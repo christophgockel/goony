@@ -126,6 +126,23 @@ var _ = Describe("Config - Parser", func() {
 		})
 	})
 
+	Context("--help flag", func() {
+		It("parses the long flag", func() {
+			options, _ := config.Parse("--help")
+
+			Expect(options.UsageHelp).To(BeTrue())
+		})
+
+		It("ignores any other flags", func() {
+			options, err := config.Parse("--endless", "--help", "--threads", "42")
+
+			Expect(err).ToNot(HaveOccurred())
+			Expect(options.UsageHelp).To(BeTrue())
+			Expect(options.RunEndless).To(BeFalse())
+			Expect(options.NumberOfRoutines).ToNot(Equal(42))
+		})
+	})
+
 	Context("all arguments", func() {
 		It("parses all options", func() {
 			options, err := config.Parse("-t", "42", "-h", "http://hostname", "-o", "output", "filename", "-e")
