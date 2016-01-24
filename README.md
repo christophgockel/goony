@@ -16,7 +16,7 @@ The easiest way at the moment: `go get github.com/christophgockel/goony`
 
 ## Usage
 
-> `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] [-e|--endless] routes-file`
+> `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] [-e|--endless] [-c|--color] routes-file`
 
 Goony has to be called with at least the route file as its argument.
 Additionally to that, there are flags to configure the number of threads (goroutines), or specify the target host, etc.
@@ -37,6 +37,8 @@ Additionally to that, there are flags to configure the number of threads (gorout
   - Writes CSV output to file `report.csv`
 - `goony --endless routes.txt`
   - Re-runs all routes from `routes.txt` continuously until aborted with Ctrl+C.
+- `goony --color routes.txt`
+  - Goony's output has colored status codes.
 - `goony --help`
   - Prints a usage help with examples.
 
