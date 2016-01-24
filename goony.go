@@ -40,7 +40,7 @@ func main() {
 		formatter := formatter(options.UseColors)
 
 		for result := range resultsChannel {
-			files.Print(result, outputFile, formatter)
+			files.Write(result, outputFile, formatter)
 		}
 		done <- true
 	}()
