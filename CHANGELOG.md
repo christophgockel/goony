@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Colored results can be enabled via a `--color` flag.
+  - The request status and HTTP status code are colored depending on whether they were successful or not.
+
 
 ## [1.2.0] - 2016-01-22
 

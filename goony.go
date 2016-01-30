@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/christophgockel/goony/config"
 	"github.com/christophgockel/goony/files"
+	"github.com/christophgockel/goony/format"
 	"github.com/christophgockel/goony/request"
 	"github.com/christophgockel/goony/signals"
 	"net/http"
@@ -36,8 +37,10 @@ func main() {
 	}
 
 	go func() {
+		formatter := formatter(options.UseColors)
+
 		for result := range resultsChannel {
-			files.Print(result, outputFile)
+			files.Write(result, outputFile, formatter)
 		}
 		done <- true
 	}()
@@ -51,7 +54,7 @@ func main() {
 }
 
 func options() config.Options {
-	options, err := config.Parse(os.Args[1:]...)
+	options, err := config.ParseAndCheck(os.Args[1:]...)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
@@ -108,4 +111,12 @@ func catchCtrlC(output chan bool) {
 	signal.Notify(signalChannel, os.Interrupt)
 
 	go signals.WaitForSignal(signalChannel, output)
+}
+
+func formatter(useColors bool) format.Formatter {
+	if useColors {
+		return format.ColoredFormatter{}
+	} else {
+		return format.NoFormatter{}
+	}
 }

@@ -7,20 +7,7 @@ import (
 )
 
 func Parse(arguments ...string) (Options, error) {
-	var err error
-	options := newDefaultOptions()
-
-	options, err = parseArguments(options, arguments...)
-
-	if err != nil || options.UsageHelp {
-		return options, err
-	}
-
-	if options.File == "" {
-		return options, errors.New("Filename is missing")
-	}
-
-	return options, err
+	return parseArguments(newDefaultOptions(), arguments...)
 }
 
 func parseArguments(options Options, arguments ...string) (Options, error) {
@@ -50,6 +37,8 @@ func parseFlag(options Options, arguments ...string) (Options, error) {
 		return parseEndlessArgument(options, arguments...)
 	} else if isHelpFlag(flag) {
 		return parseHelpArgument(options, arguments...)
+	} else if isColorFlag(flag) {
+		return parseColorArgument(options, arguments...)
 	}
 
 	return options, errors.New("Invalid argument: " + flag)
@@ -86,6 +75,10 @@ func isEndlessFlag(argument string) bool {
 
 func isHelpFlag(argument string) bool {
 	return argument == "--help"
+}
+
+func isColorFlag(argument string) bool {
+	return argument == "-c" || argument == "--color"
 }
 
 func fileArgumentIsAllowed(options Options) bool {
@@ -147,4 +140,10 @@ func parseHelpArgument(options Options, arguments ...string) (Options, error) {
 	resettedOptions.UsageHelp = true
 
 	return parseArguments(resettedOptions, arguments[0:0]...)
+}
+
+func parseColorArgument(options Options, arguments ...string) (Options, error) {
+	options.UseColors = true
+
+	return parseArguments(options, arguments[1:]...)
 }

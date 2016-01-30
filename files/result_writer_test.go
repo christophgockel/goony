@@ -3,14 +3,17 @@ package files_test
 import (
 	"bytes"
 	"github.com/christophgockel/goony/files"
+	"github.com/christophgockel/goony/format"
 	"github.com/christophgockel/goony/request"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"time"
 )
 
-var _ = Describe("Result writer", func() {
-	It("prints a Result structure as a line of CSV", func() {
+var _ = Describe("Writing of results", func() {
+	It("writes results to file", func() {
+		outputFile := new(bytes.Buffer)
+
 		result := request.Result{
 			Status:        request.SUCCESS,
 			StartTime:     time.Date(2015, 11, 13, 15, 06, 01, 123456789, time.Local),
@@ -21,10 +24,8 @@ var _ = Describe("Result writer", func() {
 			StatusMessage: "",
 		}
 
-		output := new(bytes.Buffer)
+		files.Write(result, outputFile, format.NoFormatter{})
 
-		files.Print(result, output)
-
-		Expect(output.String()).To(Equal("S,2015-11-13,15:06:01.123456789,http://host/route/endpoint,200,1522643,2015-11-13,15:06:02.123456789,\n"))
+		Expect(outputFile.String()).To(Equal("S,2015-11-13,15:06:01.123456789,http://host/route/endpoint,200,1522643,2015-11-13,15:06:02.123456789,\n"))
 	})
 })

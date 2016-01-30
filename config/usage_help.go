@@ -19,5 +19,6 @@ func UsageHelp() string {
 		"    -o, --out FILE      specify target FILE to write results to\n"+
 		"    -e, --endless       continuously repeat content of FILE\n"+
 		"                        (needs to be stopped with Ctrl+C)\n"+
+		"    -c, --color         enable colored output of status codes\n"+
 		"        --help          show this usage text", DEFAULT_HOST, DEFAULT_NUMBER_OF_ROUTINES)
 }

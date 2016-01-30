@@ -11,6 +11,7 @@ type Options struct {
 	File             string
 	OutputFilename   string
 	RunEndless       bool
+	UseColors        bool
 }
 
 func newDefaultOptions() Options {
