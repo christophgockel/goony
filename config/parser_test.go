@@ -7,13 +7,6 @@ import (
 )
 
 var _ = Describe("Config - Parser", func() {
-	It("returns an error if no arguments are given", func() {
-		_, err := config.Parse()
-
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(Equal("Filename is missing"))
-	})
-
 	It("returns an error for mistyped flag", func() {
 		_, err := config.Parse("-t800")
 
@@ -22,13 +15,6 @@ var _ = Describe("Config - Parser", func() {
 	})
 
 	Context("filename argument", func() {
-		It("returns an error if no file has been specified", func() {
-			_, err := config.Parse("-h", "host.name")
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(Equal("Filename is missing"))
-		})
-
 		It("parses the filename", func() {
 			options, _ := config.Parse("filename")
 

@@ -7,20 +7,7 @@ import (
 )
 
 func Parse(arguments ...string) (Options, error) {
-	var err error
-	options := newDefaultOptions()
-
-	options, err = parseArguments(options, arguments...)
-
-	if err != nil || options.UsageHelp {
-		return options, err
-	}
-
-	if options.File == "" {
-		return options, errors.New("Filename is missing")
-	}
-
-	return options, err
+	return parseArguments(newDefaultOptions(), arguments...)
 }
 
 func parseArguments(options Options, arguments ...string) (Options, error) {

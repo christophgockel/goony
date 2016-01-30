@@ -54,7 +54,7 @@ func main() {
 }
 
 func options() config.Options {
-	options, err := config.Parse(os.Args[1:]...)
+	options, err := config.ParseAndCheck(os.Args[1:]...)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
