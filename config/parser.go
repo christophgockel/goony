@@ -50,6 +50,8 @@ func parseFlag(options Options, arguments ...string) (Options, error) {
 		return parseEndlessArgument(options, arguments...)
 	} else if isHelpFlag(flag) {
 		return parseHelpArgument(options, arguments...)
+	} else if isCredentialsFlag(flag) {
+		return parseCredentialsArgument(options, arguments...)
 	}
 
 	return options, errors.New("Invalid argument: " + flag)
@@ -86,6 +88,10 @@ func isEndlessFlag(argument string) bool {
 
 func isHelpFlag(argument string) bool {
 	return argument == "--help"
+}
+
+func isCredentialsFlag(flag string) bool {
+	return flag == "-c" || flag == "--credentials"
 }
 
 func fileArgumentIsAllowed(options Options) bool {
@@ -147,4 +153,29 @@ func parseHelpArgument(options Options, arguments ...string) (Options, error) {
 	resettedOptions.UsageHelp = true
 
 	return parseArguments(resettedOptions, arguments[0:0]...)
+}
+
+func parseCredentialsArgument(options Options, arguments ...string) (Options, error) {
+	if len(arguments) == 1 {
+		return options, errors.New("Missing username and password")
+	}
+
+	credentials := strings.Split(arguments[1], ":")
+
+	if len(credentials) < 2 {
+		return options, errors.New("Incomplete credentials provided")
+	}
+
+	if credentials[0] == "" {
+		return options, errors.New("Incomplete credentials: missing username")
+	}
+
+	if len(credentials) == 2 && credentials[1] == "" {
+		return options, errors.New("Incomplete credentials: missing password")
+	}
+
+	options.Username = credentials[0]
+	options.Password = strings.Join(credentials[1:], ":")
+
+	return parseArguments(options, arguments[2:]...)
 }

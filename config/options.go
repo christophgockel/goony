@@ -11,6 +11,8 @@ type Options struct {
 	File             string
 	OutputFilename   string
 	RunEndless       bool
+	Username         string
+	Password         string
 }
 
 func newDefaultOptions() Options {
