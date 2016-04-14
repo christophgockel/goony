@@ -16,7 +16,7 @@ The easiest way at the moment: `go get github.com/christophgockel/goony`
 
 ## Usage
 
-> `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] [-e|--endless] routes-file`
+> `goony [-t|--threads n] [-h|--host http://target-host] [-o|--out filename] [-e|--endless] [-c|--credentials user:pass] routes-file`
 
 Goony has to be called with at least the route file as its argument.
 Additionally to that, there are flags to configure the number of threads (goroutines), or specify the target host, etc.
@@ -37,6 +37,8 @@ Additionally to that, there are flags to configure the number of threads (gorout
   - Writes CSV output to file `report.csv`
 - `goony --endless routes.txt`
   - Re-runs all routes from `routes.txt` continuously until aborted with Ctrl+C.
+- `goony --credentials user:pass routes.txt`
+  - Requests all routes from `routes.txt` with basic auth data `user:pass`.
 - `goony --help`
   - Prints a usage help with examples.
 
@@ -102,4 +104,5 @@ We ran into the issue that while you can specify the number of threads in JMeter
 So when we said _run the log file with 100 threads_ JMeter ran only the first 100 lines of the log file.
 Adding another iteration in JMeter just replayed the same first 100 lines again.
 
-I'm open to suggestions, and in case anyone knows how to replay a given access-log file with ~450k lines in JMeter, please [open an issue](https://github.com/christophgockel/goony/issues) or get in touch with me. Thank you!
+I'm open to suggestions, and in case anyone knows how to replay a given access-log file with ~450k lines in JMeter, please [open an issue](https://github.com/christophgockel/goony/issues) or get in touch with me.
+Thank you!
