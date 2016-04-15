@@ -14,6 +14,10 @@ import (
 var server *httptest.Server
 var client *http.Client
 
+func get(host string, path string) request.Result {
+	return request.Get(request.Data{host, path, "", ""}, client)
+}
+
 var _ = Describe("Request Get", func() {
 	AfterEach(func() {
 		server.Close()
@@ -22,7 +26,7 @@ var _ = Describe("Request Get", func() {
 	It("returns the status of a request", func() {
 		startServerWithResponseCode(200)
 
-		result := request.Get("/route", "http://host", client)
+		result := get("http://host", "/route")
 
 		Expect(result.Status).To(Equal(request.SUCCESS))
 	})
@@ -30,7 +34,7 @@ var _ = Describe("Request Get", func() {
 	It("tracks result data of a request", func() {
 		startServerWithResponseCode(200)
 
-		result := request.Get("/route", "http://host", client)
+		result := get("http://host", "/route")
 
 		Expect(result.Status).To(Equal(request.SUCCESS))
 		Expect(result.StartTime.Second()).To(Equal(time.Now().Second()))
@@ -44,7 +48,7 @@ var _ = Describe("Request Get", func() {
 	It("returns failure results when the request times out", func() {
 		startTimingOutServer()
 
-		result := request.Get("/route", "http://host", client)
+		result := get("http://host", "/route")
 
 		Expect(result.Status).To(Equal(request.FAILURE))
 		Expect(result.StartTime.Second()).To(Equal(time.Now().Second()))
@@ -58,6 +62,24 @@ var _ = Describe("Request Get", func() {
 		It("has string representations", func() {
 			Expect(request.SUCCESS.String()).To(Equal("S"))
 			Expect(request.FAILURE.String()).To(Equal("F"))
+		})
+	})
+
+	Context("Basic Auth", func() {
+		It("is not successful if no credentials are given", func() {
+			startBasicAuthServer("the-username", "the-password")
+
+			data := request.Data{"http://host", "/route", "", ""}
+			result := request.Get(data, client)
+			Expect(result.HttpStatus).To(Equal(401))
+		})
+
+		It("does a basic auth request", func() {
+			startBasicAuthServer("the-username", "the-password")
+
+			data := request.Data{"http://host", "/route", "the-username", "the-password"}
+			result := request.Get(data, client)
+			Expect(result.HttpStatus).To(Equal(200))
 		})
 	})
 })
@@ -74,6 +96,16 @@ func startTimingOutServer() {
 	})
 
 	client.Timeout = 1
+}
+
+func startBasicAuthServer(username string, password string) {
+	startServerWith(func(response http.ResponseWriter, request *http.Request) {
+		requestUsername, requestPassword, _ := request.BasicAuth()
+
+		if requestUsername != username || requestPassword != password {
+			response.WriteHeader(401)
+		}
+	})
 }
 
 func startServerWith(handler http.HandlerFunc) {

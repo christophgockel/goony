@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Basic Auth support for requests via the `--credentials` flag.
+
 
 ## [1.2.0] - 2016-01-22
 

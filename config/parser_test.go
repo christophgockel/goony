@@ -4,6 +4,8 @@ import (
 	"github.com/christophgockel/goony/config"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"math/rand"
+	"time"
 )
 
 var _ = Describe("Config - Parser", func() {
@@ -126,6 +128,64 @@ var _ = Describe("Config - Parser", func() {
 		})
 	})
 
+	Context("--credentials flag", func() {
+		It("parses the credentials (short flag)", func() {
+			options, _ := config.Parse("-c", "username:password")
+
+			Expect(options.Username).To(Equal("username"))
+			Expect(options.Password).To(Equal("password"))
+		})
+
+		It("parses the credentials (long flag)", func() {
+			options, _ := config.Parse("--credentials", "username:password")
+
+			Expect(options.Username).To(Equal("username"))
+			Expect(options.Password).To(Equal("password"))
+		})
+
+		It("ignores surplus colons", func() {
+			options, _ := config.Parse("-c", "username:password:with:colons")
+
+			Expect(options.Username).To(Equal("username"))
+			Expect(options.Password).To(Equal("password:with:colons"))
+		})
+
+		It("returns an error if credentials are missing", func() {
+			_, err := config.Parse("-c")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Missing username and password"))
+		})
+
+		It("returns an error when incomplete credentials are provided", func() {
+			_, err := config.Parse("-c", "username")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Incomplete credentials provided"))
+		})
+
+		It("returns an error when password is missing", func() {
+			_, err := config.Parse("-c", "username:")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Incomplete credentials: missing password"))
+		})
+
+		It("returns an error when username is missing", func() {
+			_, err := config.Parse("-c", ":password")
+
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("Incomplete credentials: missing username"))
+		})
+
+		It("allows passwords to begin with a colon", func() {
+			options, _ := config.Parse("-c", "username::password")
+
+			Expect(options.Username).To(Equal("username"))
+			Expect(options.Password).To(Equal(":password"))
+		})
+	})
+
 	Context("--help flag", func() {
 		It("parses the long flag", func() {
 			options, _ := config.Parse("--help")
@@ -144,8 +204,18 @@ var _ = Describe("Config - Parser", func() {
 	})
 
 	Context("all arguments", func() {
-		It("parses all options", func() {
-			options, err := config.Parse("-t", "42", "-h", "http://hostname", "-o", "output", "filename", "-e")
+		It("parses all options in any order", func() {
+			allPossibleArguments := CommandLineArguments{
+				[]string{"-t", "42"},
+				[]string{"-h", "http://hostname"},
+				[]string{"-o", "output"},
+				[]string{"filename"},
+				[]string{"-e"},
+				[]string{"-c", "username:password"},
+			}
+			arguments := flatten(shuffle(allPossibleArguments))
+
+			options, err := config.Parse(arguments...)
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(options.Host).To(Equal("http://hostname"))
@@ -153,17 +223,33 @@ var _ = Describe("Config - Parser", func() {
 			Expect(options.File).To(Equal("filename"))
 			Expect(options.OutputFilename).To(Equal("output"))
 			Expect(options.RunEndless).To(BeTrue())
-		})
-
-		It("doesn't care about the order of the filename and flags", func() {
-			options, err := config.Parse("-e", "filename", "-t", "42", "-h", "http://hostname", "-o", "output")
-
-			Expect(err).ToNot(HaveOccurred())
-			Expect(options.Host).To(Equal("http://hostname"))
-			Expect(options.NumberOfRoutines).To(Equal(42))
-			Expect(options.File).To(Equal("filename"))
-			Expect(options.OutputFilename).To(Equal("output"))
-			Expect(options.RunEndless).To(BeTrue())
+			Expect(options.Username).To(Equal("username"))
+			Expect(options.Password).To(Equal("password"))
 		})
 	})
 })
+
+type CommandLineArguments [][]string
+
+func shuffle(arguments CommandLineArguments) CommandLineArguments {
+	rand.Seed(time.Now().UnixNano())
+
+	for i := range arguments {
+		j := rand.Intn(i + 1)
+		arguments[i], arguments[j] = arguments[j], arguments[i]
+	}
+
+	return arguments
+}
+
+func flatten(arguments CommandLineArguments) []string {
+	var flattened []string
+
+	for i := range arguments {
+		for j := range arguments[i] {
+			flattened = append(flattened, arguments[i][j])
+		}
+	}
+
+	return flattened
+}

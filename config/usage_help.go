@@ -12,12 +12,13 @@ func UsageHelp() string {
 		"    goony --endless --host http://example.org routes.txt\n"+
 		"\n"+
 		"Configuration Options:\n"+
-		"    -h, --host          specify the target host (and optional port)\n"+
-		"                        (default: %s)\n"+
-		"    -t, --threads       define number of parallel threads\n"+
-		"                        (default: %d)\n"+
-		"    -o, --out FILE      specify target FILE to write results to\n"+
-		"    -e, --endless       continuously repeat content of FILE\n"+
-		"                        (needs to be stopped with Ctrl+C)\n"+
-		"        --help          show this usage text", DEFAULT_HOST, DEFAULT_NUMBER_OF_ROUTINES)
+		"    -h, --host HOST[:PORT]       specify the target HOST (and optional PORT)\n"+
+		"                                 (default: %s)\n"+
+		"    -t, --threads N              define N number of parallel threads\n"+
+		"                                 (default: %d)\n"+
+		"    -o, --out FILE               specify target FILE to write results to\n"+
+		"    -e, --endless                continuously repeat content of FILE\n"+
+		"                                 (needs to be stopped with Ctrl+C)\n"+
+		"    -c, --credentials USER:PASS  specify username and password for basic auth\n"+
+		"        --help                   show this usage help", DEFAULT_HOST, DEFAULT_NUMBER_OF_ROUTINES)
 }

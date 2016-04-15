@@ -22,11 +22,12 @@ type Result struct {
 	StatusMessage string
 }
 
-func Get(path string, host string, client *http.Client) Result {
-	url := host + path
-
+func Get(data Data, client *http.Client) Result {
 	start := time.Now()
-	response, err := client.Get(url)
+	url := data.Url()
+
+	request := createGetRequest(data)
+	response, err := client.Do(request)
 	end := time.Now()
 	requestDuration := end.Sub(start).Nanoseconds()
 
@@ -36,6 +37,12 @@ func Get(path string, host string, client *http.Client) Result {
 	defer response.Body.Close()
 
 	return newSuccessResult(start, end, url, response.StatusCode, requestDuration)
+}
+
+func createGetRequest(data Data) *http.Request {
+	request, _ := http.NewRequest("GET", data.Url(), nil)
+	request.SetBasicAuth(data.Username, data.Password)
+	return request
 }
 
 func newFailureResult(err error, startTime time.Time, endTime time.Time, url string, nanoseconds int64) Result {

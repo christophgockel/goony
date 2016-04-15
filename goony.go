@@ -28,7 +28,7 @@ func main() {
 	for i := 0; i < options.NumberOfRoutines; i++ {
 		go func() {
 			for line := range linesChannel {
-				resultsChannel <- request.Get(line, options.Host, http.DefaultClient)
+				resultsChannel <- request.Get(request.Data{options.Host, line, options.Username, options.Password}, http.DefaultClient)
 			}
 
 			done <- true
