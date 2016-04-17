@@ -2,6 +2,8 @@
 
 &ndash; Simple Load Testing
 
+[![Build Status on develop](https://travis-ci.org/christophgockel/goony.svg?branch=develop)](https://travis-ci.org/christophgockel/goony)
+
 
 ## Premise
 
