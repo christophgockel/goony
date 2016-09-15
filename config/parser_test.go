@@ -85,6 +85,12 @@ var _ = Describe("Config - Parser", func() {
 			Expect(options.Host).To(Equal("http://hostname"))
 		})
 
+		It("strips trailing slashes if given", func() {
+			options, _ := config.Parse("--host", "http://hostname/", "filename")
+
+			Expect(options.Host).To(Equal("http://hostname"))
+		})
+
 		It("returns an error for missing hostname", func() {
 			_, err := config.Parse("-h")
 

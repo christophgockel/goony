@@ -119,9 +119,13 @@ func parseHostnameArgument(options Options, arguments ...string) (Options, error
 		return options, errors.New("Missing hostname")
 	}
 
-	options.Host = hostWithScheme(arguments[1])
+	options.Host = cleanedHost(arguments[1])
 
 	return parseArguments(options, arguments[2:]...)
+}
+
+func cleanedHost(host string) string {
+	return hostWithScheme(hostWithoutTrailingSlash(host))
 }
 
 func hostWithScheme(host string) string {
@@ -130,6 +134,10 @@ func hostWithScheme(host string) string {
 	}
 
 	return "http://" + host
+}
+
+func hostWithoutTrailingSlash(host string) string {
+	return strings.TrimRight(host, "/")
 }
 
 func parseOutputFileArgument(options Options, arguments ...string) (Options, error) {
